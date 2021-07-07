@@ -1,0 +1,58 @@
+﻿@model EInvoiceInfrastructure.Services.InvoiceHeaderServices.InvoiceVModels.InvoiceHeaderRequest 
+@{
+    ViewData["Title"] = "CreateInvoice";
+}
+
+    <div class="container" style="padding:120px;">
+        <h1>CreateInvoice</h1>
+
+        <h4>Create Invoice</h4>
+        <hr />
+        <div class="row">
+            <div class="col-md-4">
+                <form asp-action="CreateInvoice" enctype="multipart/form-data">
+                    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                    <div class="form-group">
+                        <label asp-for="InternalId" class="control-label"></label>
+                        <input asp-for="InternalId" class="form-control" />
+                        <span asp-validation-for="InternalId" class="text-danger"></span>
+                    </div>
+                    <div class="form-group">
+                        <label asp-for="CustomerName" class="control-label"></label>
+                        <input asp-for="CustomerName" class="form-control" />
+                        <span asp-validation-for="CustomerName" class="text-danger"></span>
+                    </div>
+                    <div class="form-group">
+                        <label asp-for="InvoiceDate" class="control-label"></label>
+                        <input asp-for="InvoiceDate" type="datetime" class="form-control" />
+                        <span asp-validation-for="InvoiceDate" class="text-danger"></span>
+                    </div>
+                     <div class="form-group">
+                        <label asp-for="TaxValue" class="control-label"></label>
+                        <input asp-for="TaxValue" type="number" class="form-control" />
+                        <span asp-validation-for="TaxValue" class="text-danger"></span>
+                    </div>
+                     @*<div class="form-group">
+                        <label asp-for="InvoiceLines.ProductName" class="control-label"></label>
+                        <input asp-for="ProductName" type="number" class="form-control" />
+                        <span asp-validation-for="ProductName" class="text-danger"></span>
+                    </div>
+                    <div class="form-group">
+                        <label asp-for="TotalAmount" class="control-label"></label>
+                        <input asp-for="TotalAmount" type="number" class="form-control" />
+                        <span asp-validation-for="TotalAmount" class="text-danger"></span>
+                    </div>*@
+
+                    <div class="form-group">
+                        <input type="submit" value="Create" class="btn btn-primary" />
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <div>
+            <a asp-action="Index" class="btn btn-outline-dark">Back to List</a>
+        </div>
+
+    </div>
+

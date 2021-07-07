@@ -1,0 +1,50 @@
+﻿@model IEnumerable<EInvoiceCore.Entities.CodeItem>
+@{
+    ViewData["Title"] = "Index";
+}
+
+<h1>All Code Items</h1>
+
+<div class="container">
+    <div class="row">
+        <p>
+            <a asp-action="ImportDataFromExcelFile" class="btn btn-primary">Import</a>
+        </p>
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>
+                        Id
+                    </th>
+                    <th>
+                        InternalCode
+                    </th>
+                    <th>
+                        EgCode
+                    </th>
+                </tr>
+            </thead>
+
+            @if (Model.Count() > 0)
+            {
+                <tbody>
+                    @foreach (var item in Model)
+                    {
+                        <tr>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.Id)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.InternalCode)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.EgCode)
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            }
+
+        </table>
+    </div>
+</div>

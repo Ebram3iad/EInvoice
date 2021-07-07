@@ -1,0 +1,17 @@
+﻿
+@{
+    ViewData["Title"] = "ImportDataFromExcelFile";
+}
+
+<h1>Import Data From Excel File</h1>
+<br />
+<br />
+<div class="container">
+    <form asp-controller="CodeItem" asp-action="ImportDataFromExcelFile" method="post" enctype="multipart/form-data">
+        <input type="file"  name="File" />
+        <br />
+        <br />
+        <input type="submit" class="btn btn-primary" value="Import Data From Excel" />
+    </form>
+</div>
+
