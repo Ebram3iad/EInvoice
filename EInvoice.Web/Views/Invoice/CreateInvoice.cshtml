@@ -1,58 +1,194 @@
-﻿@model EInvoiceInfrastructure.Services.InvoiceHeaderServices.InvoiceVModels.InvoiceHeaderRequest 
+﻿@model EInvoiceInfrastructure.Services.InvoiceHeaderServices.InvoiceVModels.InvoiceHeaderRequest
 @{
     ViewData["Title"] = "CreateInvoice";
+    Model.InvoiceLines = new List<EInvoiceCore.Entities.InvoiceLine>();
 }
 
-    <div class="container" style="padding:120px;">
-        <h1>CreateInvoice</h1>
+<div class="container" style="padding:120px;">
+    <h1>CreateInvoice</h1>
 
-        <h4>Create Invoice</h4>
-        <hr />
+    <hr />
+    @*<div class="row">
+        <div class="col-md-4">*@
+    <form asp-action="CreateInvoice" enctype="multipart/form-data">
         <div class="row">
-            <div class="col-md-4">
-                <form asp-action="CreateInvoice" enctype="multipart/form-data">
-                    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-                    <div class="form-group">
-                        <label asp-for="InternalId" class="control-label"></label>
-                        <input asp-for="InternalId" class="form-control" />
-                        <span asp-validation-for="InternalId" class="text-danger"></span>
+            <div class="col-12">
+                <div class="card">
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                                <div class="form-group">
+                                    <label asp-for="InternalId" class="control-label"></label>
+                                    <input asp-for="InternalId" class="form-control" />
+                                    <span asp-validation-for="InternalId" class="text-danger"></span>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label asp-for="CustomerName" class="control-label"></label>
+                                    <input asp-for="CustomerName" class="form-control" />
+                                    <span asp-validation-for="CustomerName" class="text-danger"></span>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label asp-for="InvoiceDate" class="control-label"></label>
+                                    <input asp-for="InvoiceDate" class="form-control" />
+                                    <span asp-validation-for="InvoiceDate" class="text-danger"></span>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label asp-for="TaxValue" class="control-label"></label>
+                                    <input asp-for="TaxValue" class="form-control" />
+                                    <span asp-validation-for="TaxValue" class="text-danger"></span>
+                                </div>
+                            </div>
+                        </div>
                     </div>
-                    <div class="form-group">
-                        <label asp-for="CustomerName" class="control-label"></label>
-                        <input asp-for="CustomerName" class="form-control" />
-                        <span asp-validation-for="CustomerName" class="text-danger"></span>
-                    </div>
-                    <div class="form-group">
-                        <label asp-for="InvoiceDate" class="control-label"></label>
-                        <input asp-for="InvoiceDate" type="datetime" class="form-control" />
-                        <span asp-validation-for="InvoiceDate" class="text-danger"></span>
-                    </div>
-                     <div class="form-group">
-                        <label asp-for="TaxValue" class="control-label"></label>
-                        <input asp-for="TaxValue" type="number" class="form-control" />
-                        <span asp-validation-for="TaxValue" class="text-danger"></span>
-                    </div>
-                     @*<div class="form-group">
-                        <label asp-for="InvoiceLines.ProductName" class="control-label"></label>
-                        <input asp-for="ProductName" type="number" class="form-control" />
-                        <span asp-validation-for="ProductName" class="text-danger"></span>
-                    </div>
-                    <div class="form-group">
-                        <label asp-for="TotalAmount" class="control-label"></label>
-                        <input asp-for="TotalAmount" type="number" class="form-control" />
-                        <span asp-validation-for="TotalAmount" class="text-danger"></span>
-                    </div>*@
-
-                    <div class="form-group">
-                        <input type="submit" value="Create" class="btn btn-primary" />
-                    </div>
-                </form>
+                </div>
             </div>
         </div>
+        <div class="row">
+                <table id="tblInvoiceLine" class="table" cellpadding="0" cellspacing="0">
+                    <thead>
+                        <tr>
+                            <th style="width:150px">ProductName</th>
+                            <th style="width:150px">ProductNo</th>
+                            <th style="width:150px">Quantity</th>
+                            <th style="width:150px">Price</th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var item in Model.InvoiceLines)
+                        {
+                            <tr>
+                                <td>@item.ProductName</td>
+                                <td>@item.ProductNo</td>
+                                <td>@item.Quantity</td>
+                                <td>@item.Price</td>
+                                <td><input type="button" class="btn btn-danger" value="Remove" onclick="Remove(this)" /></td>
+                            </tr>
+                        }
+                    </tbody>
+                    <tfoot>
+                        <tr>
+                            <td><input type="text" id="txtProductName" /></td>
+                            <td><input type="text" id="txtProductNo" /></td>
+                            <td><input type="text" id="txtQuantity" /></td>
+                            <td><input type="text" id="txtPrice" /></td>
+                            <td><input type="button" class="btn btn-primary" id="btnAdd" value="Add" /></td>
+                        </tr>
+                    </tfoot>
+                </table>
+            </div>
+            <br />
+            @*<input type="button" id="btnSave" value="Save All" />*@
+            <div class="form-group">
+                <input type="submit" id="btnSave" value="Create" class="btn btn-primary" />
+            </div>
+</form>
+    @*</div>
+        </div>*@
 
-        <div>
-            <a asp-action="Index" class="btn btn-outline-dark">Back to List</a>
-        </div>
-
+    <div>
+        <a asp-action="Index" class="btn btn-outline-dark">Back to List</a>
     </div>
+
+</div>
+
+
+<script src="~/lib/jquery/dist/jquery.js"></script>
+<script src="~/lib/jquery/dist/jquery.min.js"></script>
+<script src="~/lib/jquery-validation/dist/jquery.validate.js"></script>
+<script src="~/lib/jquery-validation-unobtrusive/jquery.validate.unobtrusive.js"></script>
+<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js"></script>
+<script type="text/javascript" src="http://ajax.cdnjs.com/ajax/libs/json2/20110223/json2.js"></script>
+<script type="text/javascript">
+    $("body").on("click", "#btnAdd", function () {
+        //Reference the ProductName,ProductNo,Quantity and Price TextBoxes.
+        var txtProductName = $("#txtProductName");
+        var txtProductNo = $("#txtProductNo");
+        var txtQuantity = $("#txtQuantity");
+        var txtPrice = $("#txtPrice");
+
+        //Get the reference of the Table's TBODY element.
+        var tBody = $("#tblInvoiceLine > TBODY")[0];
+
+        //Add Row.
+        var row = tBody.insertRow(-1);
+
+        //Add ProductName cell.
+        var cell = $(row.insertCell(-1));
+        cell.html(txtProductName.val());
+
+        //Add ProductNo cell.
+        cell = $(row.insertCell(-1));
+        cell.html(txtProductNo.val());
+
+        //Add Quantity cell.
+        cell = $(row.insertCell(-1));
+        cell.html(txtQuantity.val());
+
+        //Add Price cell.
+        cell = $(row.insertCell(-1));
+        cell.html(txtPrice.val());
+
+        //Add Button cell.
+        cell = $(row.insertCell(-1));
+        var btnRemove = $("<input />");
+        btnRemove.attr("type", "button");
+        btnRemove.attr("onclick", "Remove(this);");
+        btnRemove.val("Remove");
+        cell.append(btnRemove);
+
+        //Clear the TextBoxes.
+        txtProductName.val("");
+        txtProductNo.val("");
+        txtQuantity.val("");
+        txtPrice.val("");
+    });
+
+    function Remove(button) {
+        //Determine the reference of the Row using the Button.
+        var row = $(button).closest("TR");
+        var name = $("TD", row).eq(0).html();
+        if (confirm("Do you want to delete: " + name)) {
+            //Get the reference of the Table.
+            var table = $("#tblInvoiceLine")[0];
+
+            //Delete the Table row using it's Index.
+            table.deleteRow(row[0].rowIndex);
+        }
+    };
+
+    $("body").on("click", "#btnSave", function () {
+        //Loop through the Table rows and build a JSON array.
+        var invoiceLines = new Array();
+        $("#tblInvoiceLine TBODY TR").each(function () {
+            var row = $(this);
+            var invoiceLine = {};
+            invoiceLine.ProductName = row.find("TD").eq(0).html();
+            invoiceLine.ProductNo = row.find("TD").eq(1).html();
+            invoiceLine.Quantity = row.find("TD").eq(2).html();
+            invoiceLine.Price = row.find("TD").eq(3).html();
+            invoiceLines.push(invoiceLine);
+        });
+
+        //Send the JSON array to Controller using AJAX.
+        $.ajax({
+            type: "POST",
+            url: "/Invoice/CreateInvoice",
+            data: JSON.stringify(invoiceLines),
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",
+            success: function (r) {
+                alert(r + " record(s) inserted.");
+            }
+        });
+    });
+</script>
+
 

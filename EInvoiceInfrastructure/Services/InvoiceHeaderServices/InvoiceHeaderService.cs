@@ -44,15 +44,15 @@ namespace EInvoiceInfrastructure.Services.InvoiceHeaderServices
 
                 throw;
             }
-            
+
         }
+
 
         public async Task<IEnumerable<InvoiceHeader>> GetAll()
         {
             try
             {
                 var invoices = _context.InvoiceHeaders.Include(x => x.InvoiceLines).AsNoTracking().ToList();
-                // await _invoiceHeaderRepository.GetAll();
                 return invoices;
             }
             catch (Exception)
@@ -64,19 +64,31 @@ namespace EInvoiceInfrastructure.Services.InvoiceHeaderServices
 
         private async Task<decimal> CalulateNetValue(InvoiceHeaderRequest model)
         {
+            if (await CalulateProductTotal(model)!=0)
             model.TotalAmount = await CalulateProductTotal(model);
             decimal taxValue = model.TotalAmount * model.TaxValue;
-           // decimal netValu = model.TotalAmount - taxValue;
             return (model.TotalAmount - taxValue);
         }
+
+        //private async Task<decimal> CalulateProductTotal(InvoiceHeaderRequest model)
+        //{
+        //    decimal totalAmount = 0;
+        //    foreach (var item in model.InvoiceLines)
+        //    {
+        //        item.Total = item.Quantity * item.Price;
+        //        totalAmount += item.Total;
+        //    }
+        //    return (totalAmount);
+        //}
         private async Task<decimal> CalulateProductTotal(InvoiceHeaderRequest model)
         {
             decimal totalAmount = 0;
-            foreach (var item in model.InvoiceLines)
-            {
-                item.Total = item.Quantity * item.Price;
-                totalAmount += item.Total;
-            }
+            if (model.InvoiceLines != null && model.InvoiceLines.Count > 0)
+                foreach (var item in model.InvoiceLines)
+                {
+                    item.Total = item.Quantity * item.Price;
+                    totalAmount += item.Total;
+                }
             return (totalAmount);
         }
     }

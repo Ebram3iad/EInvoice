@@ -24,7 +24,7 @@ namespace EInvoice.Web.Controllers
         } 
         public async Task<IActionResult> CreateInvoice(InvoiceHeaderRequest model  )
         {
-            if (ModelState.IsValid)
+            if (ModelState.IsValid && model.InvoiceLines!=null)
             {
                await _invoiceHeaderService.Create(model);
                 return RedirectToAction("Index");
