@@ -23,13 +23,6 @@ namespace EInvoice.Web.Controllers
             return View(invoiceHeaders);
         }
        
-        // [HttpGet]
-        //public async Task<IActionResult> CreateInvoice(  )
-        //{
-        //    return View();
-        //}
-
-        //[HttpPost]
         public async Task<IActionResult> CreateInvoice(InvoiceHeaderRequest model)
         {
             if (ModelState.IsValid && model.InvoiceLines != null)
