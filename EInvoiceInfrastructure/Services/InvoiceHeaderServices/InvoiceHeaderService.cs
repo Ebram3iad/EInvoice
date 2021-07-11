@@ -62,6 +62,12 @@ namespace EInvoiceInfrastructure.Services.InvoiceHeaderServices
             }
         }
 
+        public async Task<InvoiceHeader> IvoiceDetails(int invoiceId)
+        {
+            var invoice = _context.InvoiceHeaders.Include(x => x.InvoiceLines.Where(i=> i.InvoiceID==invoiceId)).Where(i=> i.Id==invoiceId).AsNoTracking().FirstOrDefault();
+            return invoice;
+        }
+
         private async Task<decimal> CalulateNetValue(InvoiceHeaderRequest model)
         {
             if (await CalulateProductTotal(model)!=0)
@@ -70,16 +76,6 @@ namespace EInvoiceInfrastructure.Services.InvoiceHeaderServices
             return (model.TotalAmount - taxValue);
         }
 
-        //private async Task<decimal> CalulateProductTotal(InvoiceHeaderRequest model)
-        //{
-        //    decimal totalAmount = 0;
-        //    foreach (var item in model.InvoiceLines)
-        //    {
-        //        item.Total = item.Quantity * item.Price;
-        //        totalAmount += item.Total;
-        //    }
-        //    return (totalAmount);
-        //}
         private async Task<decimal> CalulateProductTotal(InvoiceHeaderRequest model)
         {
             decimal totalAmount = 0;

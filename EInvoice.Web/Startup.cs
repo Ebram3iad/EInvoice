@@ -35,7 +35,8 @@ namespace EInvoice.Web
            
             var conn = Configuration.GetConnectionString("DBConnectionString");
             services.AddDbContext<DBContext>(options =>
-                        options.UseSqlServer(conn));
+                        
+            options.UseSqlServer(conn));
             // Auto Mapper Configurations
             var mapperConfig = new MapperConfiguration(mc =>
             {

@@ -21,15 +21,39 @@ namespace EInvoice.Web.Controllers
         {
             var invoiceHeaders = await _invoiceHeaderService.GetAll();
             return View(invoiceHeaders);
-        } 
-        public async Task<IActionResult> CreateInvoice(InvoiceHeaderRequest model  )
+        }
+       
+        // [HttpGet]
+        //public async Task<IActionResult> CreateInvoice(  )
+        //{
+        //    return View();
+        //}
+
+        //[HttpPost]
+        public async Task<IActionResult> CreateInvoice(InvoiceHeaderRequest model)
         {
-            if (ModelState.IsValid && model.InvoiceLines!=null)
+            if (ModelState.IsValid && model.InvoiceLines != null)
             {
-               await _invoiceHeaderService.Create(model);
+                await _invoiceHeaderService.Create(model);
                 return RedirectToAction("Index");
             }
             return View(model);
+        }
+
+        public async Task<IActionResult> Details(int id)
+        {
+            if (id == 0)
+            {
+                return NotFound();
+            }
+
+            var invoice =await _invoiceHeaderService.IvoiceDetails(id);
+            if (invoice == null)
+            {
+                return NotFound();
+            }
+
+            return View(invoice);
         }
     }
 }

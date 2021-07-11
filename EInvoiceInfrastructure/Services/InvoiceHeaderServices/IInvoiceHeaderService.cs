@@ -11,5 +11,6 @@ namespace EInvoiceInfrastructure.Services.InvoiceHeaderServices
     {
         Task<IEnumerable<InvoiceHeader>> GetAll();
         Task Create(InvoiceHeaderRequest invoiceHeader);
+        Task<InvoiceHeader> IvoiceDetails(int invoiceId);
     }
 }
