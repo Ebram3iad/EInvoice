@@ -1,0 +1,202 @@
+﻿@model EInvoiceInfrastructure.Services.InvoiceHeaderServices.InvoiceVModels.InvoiceHeaderRequest
+@*@model EInvoiceCore.Entities.InvoiceHeader*@
+
+@{
+    ViewData["Title"] = "Create";
+
+    //Model.InvoiceLines = new List<EInvoiceCore.Entities.InvoiceLine>();
+    
+}
+
+<h1>Create</h1>
+
+<div class="container" style="padding:120px;">
+    <h1>CreateInvoiceHeader</h1>
+
+    <div class="row">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                            <div class="form-group">
+                                <label class="control-label">InternalId</label>
+                                <input type="number" id="InternalId" class="form-control" />
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label class="control-label">CustomerName</label>
+                                <input type="text" id="CustomerName" class="form-control" />
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label class="control-label">InvoiceDate</label>
+                                <input type="date" id="InvoiceDate" class="form-control" />
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label class="control-label">TaxValue</label>
+                                <input type="number" id="TaxValue" class="form-control" />
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <table id="tblInvoiceLine" class="table" cellpadding="0" cellspacing="0">
+            <thead>
+                <tr>
+                    <th style="width:150px">ProductName</th>
+                    <th style="width:150px">ProductNo</th>
+                    <th style="width:150px">Quantity</th>
+                    <th style="width:150px">Price</th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Model.InvoiceLines)
+                {
+                    <tr>
+                        <td>@item.ProductName</td>
+                        <td>@item.ProductNo</td>
+                        <td>@item.Quantity</td>
+                        <td>@item.Price</td>
+                        <td><input type="button" class="btn btn-danger" value="Remove" onclick="Remove(this)" /></td>
+                    </tr>
+                }
+            </tbody>
+            <tfoot>
+                <tr>
+                    <td><input type="text" id="txtProductName" /></td>
+                    <td><input type="text" id="txtProductNo" /></td>
+                    <td><input type="text" id="txtQuantity" /></td>
+                    <td><input type="text" id="txtPrice" /></td>
+                    <td><input type="button" class="btn btn-primary" id="btnAdd" value="Add" /></td>
+                </tr>
+            </tfoot>
+        </table>
+    </div>
+    <br />
+    @*<input type="button" id="btnSave" value="Save All" />*@
+    <div class="form-group">
+        <input type="button" id="btnSave" value="Create" class="btn btn-primary" />
+    </div>
+
+    <div>
+        <a asp-action="Index" class="btn btn-outline-dark">Back to List</a>
+    </div>
+</div>
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+<script src="https://ajax.cdnjs.com/ajax/libs/json2/20110223/json2.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js" integrity="sha512-bLT0Qm9VnAYZDflyKcBaQ2gg0hSYNQrJ8RilYldYQ1FxQYoCLtUjuuRuZo+fjqhx/qtq/1itJ0C2ejDxltZVFg==" crossorigin="anonymous"></script>
+<script type="text/javascript">
+    $("body").on("click", "#btnAdd", function (e) {
+        e.preventDefault();
+        //Reference the ProductName,ProductNo,Quantity and Price TextBoxes.
+        var txtProductName = $("#txtProductName");
+        var txtProductNo = $("#txtProductNo");
+        var txtQuantity = $("#txtQuantity");
+        var txtPrice = $("#txtPrice");
+
+        //Get the reference of the Table's TBODY element.
+        var tBody = $("#tblInvoiceLine > TBODY")[0];
+
+        //Add Row.
+        var row = tBody.insertRow(-1);
+
+        //Add ProductName cell.
+        var cell = $(row.insertCell(-1));
+        cell.html(txtProductName.val());
+
+        //Add ProductNo cell.
+        cell = $(row.insertCell(-1));
+        cell.html(txtProductNo.val());
+
+        //Add Quantity cell.
+        cell = $(row.insertCell(-1));
+        cell.html(txtQuantity.val());
+
+        //Add Price cell.
+        cell = $(row.insertCell(-1));
+        cell.html(txtPrice.val());
+
+        //Add Button cell.
+        cell = $(row.insertCell(-1));
+        var btnRemove = $("<input />");
+        btnRemove.attr("type", "button");
+        btnRemove.attr("onclick", "Remove(this);");
+        btnRemove.val("Remove");
+        cell.append(btnRemove);
+
+        //Clear the TextBoxes.
+        txtProductName.val("");
+        txtProductNo.val("");
+        txtQuantity.val("");
+        txtPrice.val("");
+    });
+
+    function Remove(button) {
+        //Determine the reference of the Row using the Button.
+        var row = $(button).closest("TR");
+        var name = $("TD", row).eq(0).html();
+        if (confirm("Do you want to delete: " + name)) {
+            //Get the reference of the Table.
+            var table = $("#tblInvoiceLine")[0];
+
+            //Delete the Table row using it's Index.
+            table.deleteRow(row[0].rowIndex);
+        }
+    };
+
+    $("body").on("click", "#btnSave", function (e) {
+        //Loop through the Table rows and build a JSON array.
+        e.preventDefault();
+        var Details = [];
+        debugger;
+        var sTableName = document.getElementById("tblInvoiceLine");
+        debugger;
+        for (var i = 0; i < sTableName.children[1].childElementCount; i++) {
+            var tableRow = sTableName.children[1].children[i];
+            var InvoiceLine = {};
+            InvoiceLine.ProductName = tableRow.children[0].innerText;
+            InvoiceLine.ProductNo = tableRow.children[1].innerText;
+            InvoiceLine.Quantity = tableRow.children[2].innerText;
+            InvoiceLine.Price = tableRow.children[3].innerText;
+            Details.push(InvoiceLine);
+
+        }
+        var InvoiceHeaders = {
+            InternalId: document.getElementById("InternalId").value,
+            CustomerName: document.getElementById("CustomerName").value,
+            InvoiceDate: document.getElementById("InvoiceDate").value,
+            TaxValue: document.getElementById("TaxValue").value,
+            InvoiceLines: Details
+        };
+
+
+        console.log(JSON.stringify(InvoiceHeaders));
+        console.log({ model: InvoiceHeaders });
+        //Send the JSON array to Controller using AJAX.
+        $.ajax({
+            type: "POST",
+            //async: true,
+            url: "/InvoiceHeader/Create/",
+            data: '{model: ' + JSON.stringify(InvoiceHeaders) + '}',
+            //data: ,
+            //data: { model :  JSON.stringify(InvoiceHeaders) },
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",
+            success: function (r) {
+                alert(r + " record(s) inserted.");
+
+            }
+        });
+    });
+</script>

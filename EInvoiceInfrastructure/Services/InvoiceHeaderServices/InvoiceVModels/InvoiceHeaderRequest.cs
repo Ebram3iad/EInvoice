@@ -18,5 +18,8 @@ namespace EInvoiceInfrastructure.Services.InvoiceHeaderServices.InvoiceVModels
         public decimal TotalAmount { get; set; }
         public decimal NetTotal { get; set; }
         public ICollection<InvoiceLine> InvoiceLines { get; set; }
+        // This will set the default value to a new list instead of null
+        //public List<InvoiceLine> InvoiceLines { get; set; } = new List<InvoiceLine>();
+
     }
 }

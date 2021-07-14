@@ -17,13 +17,17 @@ namespace EInvoice.Web.Controllers
         {
             _invoiceHeaderService = invoiceHeaderService;
         }
+
+        [HttpGet]
         public async Task<IActionResult> Index()
         {
             var invoiceHeaders = await _invoiceHeaderService.GetAll();
             return View(invoiceHeaders);
         }
-       
-        public async Task<IActionResult> CreateInvoice(InvoiceHeaderRequest model)
+
+       //[HttpPost]
+       //[ValidateAntiForgeryToken]
+        public async Task<IActionResult> CreateInvoice( InvoiceHeaderRequest model)
         {
             if (ModelState.IsValid && model.InvoiceLines != null)
             {

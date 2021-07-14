@@ -8,9 +8,7 @@
     <h1>CreateInvoice</h1>
 
     <hr />
-    @*<div class="row">
-        <div class="col-md-4">*@
-    <form asp-action="CreateInvoice" enctype="multipart/form-data">
+    <form asp-action="CreateInvoice" method="post" enctype="multipart/form-data">
         <div class="row">
             <div class="col-12">
                 <div class="card">
@@ -45,6 +43,20 @@
                                     <span asp-validation-for="TaxValue" class="text-danger"></span>
                                 </div>
                             </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label asp-for="TotalAmount" class="control-label"></label>
+                                    <input asp-for="TotalAmount" disabled id="TotalAmount" class="form-control" />
+                                    <span asp-validation-for="TotalAmount" class="text-danger"></span>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label asp-for="NetTotal" class="control-label"></label>
+                                    <input asp-for="NetTotal" disabled id="NetTotal" class="form-control" />
+                                    <span asp-validation-for="NetTotal" class="text-danger"></span>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -53,32 +65,35 @@
         <div class="row">
             <table id="tblInvoiceLine" class="table" cellpadding="0" cellspacing="0">
                 <thead>
-                    <tr>
+                    <tr class="table-hover">
                         <th style="width:150px">ProductName</th>
                         <th style="width:150px">ProductNo</th>
                         <th style="width:150px">Quantity</th>
                         <th style="width:150px">Price</th>
+                        <th style="width:150px">Total</th>
                         <th></th>
                     </tr>
                 </thead>
                 <tbody>
                     @foreach (var item in Model.InvoiceLines)
                     {
-                        <tr>
+                        <tr class="table-dark">
                             <td>@item.ProductName</td>
                             <td>@item.ProductNo</td>
                             <td>@item.Quantity</td>
                             <td>@item.Price</td>
+                            <td>@item.Total</td>
                             <td><input type="button" class="btn btn-danger" value="Remove" onclick="Remove(this)" /></td>
                         </tr>
                     }
                 </tbody>
                 <tfoot>
-                    <tr>
+                    <tr class="table-primary">
                         <td><input type="text" id="txtProductName" /></td>
-                        <td><input type="text" id="txtProductNo" /></td>
-                        <td><input type="text" id="txtQuantity" /></td>
-                        <td><input type="text" id="txtPrice" /></td>
+                        <td><input type="number" id="txtProductNo" /></td>
+                        <td><input type="number" id="txtQuantity" /></td>
+                        <td><input type="number" id="txtPrice" /></td>
+                        <td><input type="text" id="totalPrice" disabled /></td>
                         <td><input type="button" class="btn btn-primary" id="btnAdd" value="Add" /></td>
                     </tr>
                 </tfoot>
@@ -87,27 +102,43 @@
         <br />
         @*<input type="button" id="btnSave" value="Save All" />*@
         <div class="form-group">
-            <input type="submit" id="btnSave" value="Create" class="btn btn-primary" />
+            <input type="button" id="btnSave" value="Create" class="btn btn-primary" />
         </div>
     </form>
-    @*</div>
-        </div>*@
-
     <div>
         <a asp-action="Index" class="btn btn-outline-dark">Back to List</a>
     </div>
 
 </div>
 
-
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+<script src="https://ajax.cdnjs.com/ajax/libs/json2/20110223/json2.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js" integrity="sha512-bLT0Qm9VnAYZDflyKcBaQ2gg0hSYNQrJ8RilYldYQ1FxQYoCLtUjuuRuZo+fjqhx/qtq/1itJ0C2ejDxltZVFg==" crossorigin="anonymous"></script>
 <script type="text/javascript">
-    $("body").on("click", "#btnAdd", function () {
+    $("body").on("click", "#btnAdd", function (e) {
+        e.preventDefault();
         //Reference the ProductName,ProductNo,Quantity and Price TextBoxes.
         var txtProductName = $("#txtProductName");
         var txtProductNo = $("#txtProductNo");
         var txtQuantity = $("#txtQuantity");
         var txtPrice = $("#txtPrice");
+        var totalPrice = $("#totalPrice");
+        var txtTaxValue = $("#TaxValue");
+        var txtNetTotal = $("#NetTotal");
+        var txtTotalAmount = $("#TotalAmount");
+
+        //Calculate total price of Product
+        var total = 0;
+        var taxValue = parseFloat(txtTaxValue.val());
+        var netValue = parseFloat(txtNetTotal.val());
+        var totalAmount = parseFloat(txtTotalAmount.val());
+        var quantity = txtQuantity.val();
+        var price = txtPrice.val();
+        if ($.isNumeric(quantity) && $.isNumeric(price)) {
+            total = parseFloat(quantity) * parseFloat(price)
+        }
+        totalAmount += total;
+        netValue = totalAmount - (totalAmount * taxValue);
 
         //Get the reference of the Table's TBODY element.
         var tBody = $("#tblInvoiceLine > TBODY")[0];
@@ -131,6 +162,10 @@
         cell = $(row.insertCell(-1));
         cell.html(txtPrice.val());
 
+        //Add Total cell.
+        cell = $(row.insertCell(-1));
+        cell.html(total);
+
         //Add Button cell.
         cell = $(row.insertCell(-1));
         var btnRemove = $("<input />");
@@ -139,29 +174,50 @@
         btnRemove.val("Remove");
         cell.append(btnRemove);
 
+        //Add vals to inputs
+        txtTotalAmount.val(totalAmount);
+        txtNetTotal.val(netValue);
+
         //Clear the TextBoxes.
         txtProductName.val("");
         txtProductNo.val("");
         txtQuantity.val("");
         txtPrice.val("");
+        totalPrice.val("");
     });
 
     function Remove(button) {
+        var netValue = parseFloat($("#NetTotal").val());
+        var totalAmount = parseFloat($("#TotalAmount").val());
         //Determine the reference of the Row using the Button.
         var row = $(button).closest("TR");
         var name = $("TD", row).eq(0).html();
+        var total = $("TD", row).eq(4).html();
         if (confirm("Do you want to delete: " + name)) {
             //Get the reference of the Table.
             var table = $("#tblInvoiceLine")[0];
 
             //Delete the Table row using it's Index.
             table.deleteRow(row[0].rowIndex);
+            //sub total from Total Amount and NetValue
+            totalAmount -= total;
+            netValue -= total;
+            //Add vals to inputs
+            $("#NetTotal").val(netValue);
+            $("#TotalAmount").val(totalAmount);
+
+            console.log(totalAmount, netValue);
         }
+
+
     };
 
-    $("body").on("click", "#btnSave", function () {
+    $("body").on("click", "#btnSave", function (e) {
         //Loop through the Table rows and build a JSON array.
+        e.preventDefault();
         var Details = [];
+        var totalAmount = 0;
+        var netTotal = 0;
         debugger;
         var sTableName = document.getElementById("tblInvoiceLine");
         debugger;
@@ -172,33 +228,69 @@
             InvoiceLine.ProductNo = tableRow.children[1].innerText;
             InvoiceLine.Quantity = tableRow.children[2].innerText;
             InvoiceLine.Price = tableRow.children[3].innerText;
+            InvoiceLine.Total = tableRow.children[4].innerText;
+            totalAmount = totalAmount + parseFloat(InvoiceLine.Total);
             Details.push(InvoiceLine);
 
         }
-        var InvoiceLines = {
-            'InvoiceLines': Details,
-            'InternalId': document.getElementById("InternalId").value,
-            'CustomerName': document.getElementById("CustomerName").value,
-            'InvoiceDate': document.getElementById("InvoiceDate").value,
-            'TaxValue': document.getElementById("TaxValue").value,
-
-
+        var InvoiceHeaders = {
+            InternalId: document.getElementById("InternalId").value,
+            CustomerName: document.getElementById("CustomerName").value,
+            InvoiceDate: document.getElementById("InvoiceDate").value,
+            TaxValue: document.getElementById("TaxValue").value,
+            TotalAmount: document.getElementById("TotalAmount").value,
+            NetTotal: document.getElementById("NetTotal").value,
+            //TotalAmount = totalAmount,
+            InvoiceLines: Details
         };
 
-
+        console.log(JSON.stringify(InvoiceHeaders));
+        console.log(InvoiceHeaders);
         //Send the JSON array to Controller using AJAX.
         $.ajax({
             type: "POST",
-            url: "/Invoice/CreateInvoice",
-            data: JSON.stringify(InvoiceLines),
+            async: true,
+            url: "/Invoice/CreateInvoice/",
+            data: JSON.stringify(InvoiceHeaders),
             contentType: "application/json; charset=utf-8",
             dataType: "json",
-            success: function (r) {
-                alert(r + " record(s) inserted.");
+            success: function (response) {
+                alert(response + " record(s) inserted.");
+            },
+            failure: function (response) {
+                alert(response.responseText);
             }
+
         });
     });
 </script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 @*//after click create button pass all data view to controller for save database
     //function createinvoice(data) {
     //    return $.ajax({
@@ -275,5 +367,9 @@
         'InvoiceDate': document.getelementbyid("InvoiceDate").value,
         'TaxValue': document.getelementbyid("TaxValue").value,
         'InvoiceLines': listofInvoiceLines,
+
+
+                // data: JSON.stringify({ model: InvoiceHeaders }),
+            //data: { model :  JSON.stringify(InvoiceHeaders) },
 
     };*@
