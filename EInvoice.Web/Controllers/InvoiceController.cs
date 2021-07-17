@@ -18,7 +18,6 @@ namespace EInvoice.Web.Controllers
             _invoiceHeaderService = invoiceHeaderService;
         }
 
-        [HttpGet]
         public async Task<IActionResult> Index()
         {
             var invoiceHeaders = await _invoiceHeaderService.GetAll();

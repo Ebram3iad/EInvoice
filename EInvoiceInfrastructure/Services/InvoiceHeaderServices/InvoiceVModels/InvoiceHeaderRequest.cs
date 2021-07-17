@@ -14,6 +14,7 @@ namespace EInvoiceInfrastructure.Services.InvoiceHeaderServices.InvoiceVModels
         public string CustomerName { get; set; }
         [Required]
         public DateTime InvoiceDate { get; set; }
+        [Required]
         public decimal TaxValue { get; set; }
         public decimal TotalAmount { get; set; }
         public decimal NetTotal { get; set; }

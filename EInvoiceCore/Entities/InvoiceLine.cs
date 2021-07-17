@@ -10,7 +10,7 @@ namespace EInvoiceCore.Entities
         [ForeignKey("InvoiceID")]
         public InvoiceHeader Invoice { get; set; }
         public string ProductName { get; set; }
-        public int ProductNo { get; set; }
+        public string ProductNo { get; set; }
         public int Quantity { get; set; }
         public decimal Price { get; set; }
         public decimal Total { get; set; }

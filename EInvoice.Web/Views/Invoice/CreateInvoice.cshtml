@@ -1,7 +1,6 @@
 ﻿@model EInvoiceInfrastructure.Services.InvoiceHeaderServices.InvoiceVModels.InvoiceHeaderRequest
 @{
     ViewData["Title"] = "CreateInvoice";
-    //Model.InvoiceLines = new List<EInvoiceCore.Entities.InvoiceLine>();
 }
 
 <div class="container" style="padding:120px;">
@@ -90,10 +89,10 @@
                 </tbody>
                 <tfoot>
                     <tr class="table-primary">
-                        <td><input type="text" name="ProductName" id="txtProductName" /></td>
-                        <td><input type="text" name="ProductNo" id="txtProductNo" /></td>
-                        <td><input type="text" name="Quantity" id="txtQuantity" /></td>
-                        <td><input type="text" name="Price" id="txtPrice" /></td>
+                        <td><input type="text" name="ProductName" id="txtProductName" required/></td>
+                        <td><input type="text" name="ProductNo" id="txtProductNo" required/></td>
+                        <td><input type="number" name="Quantity" id="txtQuantity" required/></td>
+                        <td><input type="number" name="Price" id="txtPrice" required/></td>
                         <td><input type="text" name="Total" id="totalPrice" disabled /></td>
                         <td><input type="button" class="btn btn-primary" id="btnAdd" value="Add" /></td>
                     </tr>
@@ -243,24 +242,15 @@
 
         console.log(JSON.stringify(InvoiceHeaders));
         console.log(InvoiceHeaders);
-         $('#invoiceForm').submit();
-        //Send the JSON array to Controller using AJAX.
-        //$.ajax({
-        //    type: "POST",
-        //    async: true,
-        //    url: "/Invoice/CreateInvoice/",
-        //    body: InvoiceHeaders,
-        //    //data: JSON.stringify(InvoiceHeaders),
-        //    contentType: "application/json; charset=utf-8",
-        //    dataType: "json",
-        //    success: function (response) {
-        //        alert(response + " record(s) inserted.");
-        //    },
-        //    failure: function (response) {
-        //        alert(response.responseText);
-        //    }
-
-        //});
+        $.post("/Invoice/CreateInvoice/", { model: InvoiceHeaders })
+            .done(function () {
+                alert("Added Successfully.");
+                window.location.href="/Invoice/Index";
+           })
+            .fail(function (response) {
+                alert("Enter Valid Data")
+                console.log(response.responseText);
+            })
     });
 </script>
 
