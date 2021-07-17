@@ -1,12 +1,12 @@
-﻿@*@model EInvoiceInfrastructure.Services.InvoiceHeaderServices.InvoiceVModels.InvoiceHeaderRequest*@
-@model EInvoiceCore.Entities.InvoiceHeader
+﻿@model EInvoiceInfrastructure.Services.InvoiceHeaderServices.InvoiceVModels.InvoiceHeaderRequest
 
 @{
     ViewData["Title"] = "CreateInvoiceHeader";
 }
 
+<h1>CreateInvoiceHeader</h1>
 <div class="container" style="padding:120px;">
-    <h1>CreateInvoiceHeader</h1>
+    <h1>CreateInvoiceHeaderTest</h1>
 
     <div class="row">
         <div class="col-12">
@@ -68,10 +68,10 @@
             </tbody>
             <tfoot>
                 <tr>
-                    <td><input type="text" id="txtProductName" /></td>
-                    <td><input type="text" id="txtProductNo" /></td>
-                    <td><input type="text" id="txtQuantity" /></td>
-                    <td><input type="text" id="txtPrice" /></td>
+                    <td><input type="text" name="ProductName" id="txtProductName" /></td>
+                    <td><input type="text" name="ProductNo" id="txtProductNo" /></td>
+                    <td><input type="text" name="tQuantity" id="txtQuantity" /></td>
+                    <td><input type="text" name="Price" id="txtPrice" /></td>
                     <td><input type="button" class="btn btn-primary" id="btnAdd" value="Add" /></td>
                 </tr>
             </tfoot>
@@ -153,37 +153,33 @@
     $("body").on("click", "#btnSave", function (e) {
         //Loop through the Table rows and build a JSON array.
         e.preventDefault();
-        var Details = [];
-        debugger;
-        var sTableName = document.getElementById("tblInvoiceLine");
-        debugger;
-        for (var i = 0; i < sTableName.children[1].childElementCount; i++) {
-            var tableRow = sTableName.children[1].children[i];
+        var InvoiceHeader = {};
+        var InvoiceLines = [];
+        $("#tblInvoiceLine TBODY TR").each(function () {
+            var row = $(this);
             var InvoiceLine = {};
-            InvoiceLine.ProductName = tableRow.children[0].innerText;
-            InvoiceLine.ProductNo = tableRow.children[1].innerText;
-            InvoiceLine.Quantity = tableRow.children[2].innerText;
-            InvoiceLine.Price = tableRow.children[3].innerText;
-            Details.push(InvoiceLine);
-
-        }
-        var InvoiceHeaders = {
-            InternalId: document.getElementById("InternalId").value,
-            CustomerName: document.getElementById("CustomerName").value,
-            InvoiceDate: document.getElementById("InvoiceDate").value,
-            TaxValue: document.getElementById("TaxValue").value,
-            InvoiceLines: Details
-        };
+            InvoiceLine.ProductName = row.find("TD").eq(0).html();
+            InvoiceLine.ProductNo = row.find("TD").eq(1).html();
+            InvoiceLine.Quantity = row.find("TD").eq(2).html();
+            InvoiceLine.Price = row.find("TD").eq(3).html();
+            InvoiceLines.push(InvoiceLine)
+        });
+        InvoiceHeader.InternalId = $("#InternalId").val();
+        InvoiceHeader.CustomerName = $("#CustomerName").val();
+        InvoiceHeader.InvoiceDate = $("#InvoiceDate").val();
+        InvoiceHeader.TaxValue = $("#TaxValue").val();
+        InvoiceHeader.InvoiceLines = InvoiceLines;
 
 
-        console.log(JSON.stringify(InvoiceHeaders));
-        console.log({ model: InvoiceHeaders });
+
+        console.log(JSON.stringify(InvoiceHeader));
+        console.log({ model: InvoiceHeader });
         //Send the JSON array to Controller using AJAX.
         $.ajax({
             type: "POST",
-            //async: true,
-            url: "/InvoiceHeader/Create/",
-            data: '{model: ' + JSON.stringify(InvoiceHeaders) + '}',
+            async: true,
+            url: "/InvoiceHeader/CreateInvoiceHeader",
+            data: JSON.stringify(InvoiceHeader),
             //data: ,
             //data: { model :  JSON.stringify(InvoiceHeaders) },
             contentType: "application/json; charset=utf-8",
@@ -195,3 +191,4 @@
         });
     });
 </script>
+

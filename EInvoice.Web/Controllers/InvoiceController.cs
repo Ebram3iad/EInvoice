@@ -24,18 +24,35 @@ namespace EInvoice.Web.Controllers
             var invoiceHeaders = await _invoiceHeaderService.GetAll();
             return View(invoiceHeaders);
         }
+        public async Task<ActionResult> CreateInvoice()
+        {
+            var model = new InvoiceHeaderRequest()
+            {
+                CustomerName = "",
+                InternalId = 0,
+                InvoiceDate = DateTime.Now,
+                TaxValue = 0,
+                TotalAmount = 0,
+                NetTotal = 0,
+                InvoiceLines = new List<InvoiceLine> { }
 
-       //[HttpPost]
+            };
+            return View(model);
+        }
+
+
+        [HttpPost]
        //[ValidateAntiForgeryToken]
         public async Task<IActionResult> CreateInvoice( InvoiceHeaderRequest model)
         {
-            if (ModelState.IsValid && model.InvoiceLines != null)
+            if (ModelState.IsValid && model.InvoiceLines != null&& model.InvoiceLines.Count!=0)
             {
                 await _invoiceHeaderService.Create(model);
                 return RedirectToAction("Index");
             }
             return View(model);
         }
+       
 
         public async Task<IActionResult> Details(int id)
         {

@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using EInvoiceCore.Entities;
 using EInvoiceInfrastructure.Services.InvoiceHeaderServices;
 using EInvoiceInfrastructure.Services.InvoiceHeaderServices.InvoiceVModels;
 using Microsoft.AspNetCore.Http;
@@ -32,13 +33,24 @@ namespace EInvoice.Web.Controllers
         // GET: InvoiceHeader/Create
         public async Task<ActionResult> Create()
         {
-            return View();
+            var model = new InvoiceHeaderRequest()
+            {
+                CustomerName = "",
+                InternalId = 0,
+                InvoiceDate = DateTime.Now,
+                TaxValue = 0,
+                TotalAmount = 0,
+                NetTotal = 0,
+                InvoiceLines = new List<InvoiceLine> {  }
+               
+        };
+            return View(model);
         }
 
         // POST: InvoiceHeader/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<ActionResult> Create(InvoiceHeaderRequest model)
+        public async Task<ActionResult> Create([FromBody] InvoiceHeaderRequest model)
         {
             try
             {
@@ -55,7 +67,34 @@ namespace EInvoice.Web.Controllers
                 return View();
             }
         }
+        public async Task<ActionResult> CreateInvoiceHeader()
+        {
+            var model = new InvoiceHeaderRequest()
+            {
+                CustomerName = "",
+                InternalId = 0,
+                InvoiceDate = DateTime.Now,
+                TaxValue = 0,
+                TotalAmount = 0,
+                NetTotal = 0,
+                InvoiceLines = new List<InvoiceLine> { }
 
+            };
+            return View(model);
+        }
+
+
+        [HttpPost]
+        //[ValidateAntiForgeryToken]
+        public async Task<IActionResult> CreateInvoiceHeader(InvoiceHeaderRequest model)
+        {
+            if (ModelState.IsValid && model.InvoiceLines != null && model.InvoiceLines.Count != 0)
+            {
+                await _invoiceHeaderService.Create(model);
+                return RedirectToAction("Index");
+            }
+            return View(model);
+        }
         // GET: InvoiceHeader/Edit/5
         public ActionResult Edit(int id)
         {

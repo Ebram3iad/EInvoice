@@ -1,14 +1,14 @@
 ﻿@model EInvoiceInfrastructure.Services.InvoiceHeaderServices.InvoiceVModels.InvoiceHeaderRequest
 @{
     ViewData["Title"] = "CreateInvoice";
-    Model.InvoiceLines = new List<EInvoiceCore.Entities.InvoiceLine>();
+    //Model.InvoiceLines = new List<EInvoiceCore.Entities.InvoiceLine>();
 }
 
 <div class="container" style="padding:120px;">
     <h1>CreateInvoice</h1>
 
     <hr />
-    <form asp-action="CreateInvoice" method="post" enctype="multipart/form-data">
+    <form asp-action="CreateInvoice" method="post" id="invoiceForm" enctype="multipart/form-data">
         <div class="row">
             <div class="col-12">
                 <div class="card">
@@ -53,6 +53,7 @@
                             <div class="col-md-6">
                                 <div class="form-group">
                                     <label asp-for="NetTotal" class="control-label"></label>
+                                    <input type="hidden" asp-for="InvoiceLines" />
                                     <input asp-for="NetTotal" disabled id="NetTotal" class="form-control" />
                                     <span asp-validation-for="NetTotal" class="text-danger"></span>
                                 </div>
@@ -63,9 +64,9 @@
             </div>
         </div>
         <div class="row">
-            <table id="tblInvoiceLine" class="table" cellpadding="0" cellspacing="0">
+            <table id="tblInvoiceLine" class="table  table-striped table-light" cellpadding="0" cellspacing="0">
                 <thead>
-                    <tr class="table-hover">
+                    <tr >
                         <th style="width:150px">ProductName</th>
                         <th style="width:150px">ProductNo</th>
                         <th style="width:150px">Quantity</th>
@@ -74,7 +75,7 @@
                         <th></th>
                     </tr>
                 </thead>
-                <tbody>
+                <tbody >
                     @foreach (var item in Model.InvoiceLines)
                     {
                         <tr class="table-dark">
@@ -89,18 +90,17 @@
                 </tbody>
                 <tfoot>
                     <tr class="table-primary">
-                        <td><input type="text" id="txtProductName" /></td>
-                        <td><input type="number" id="txtProductNo" /></td>
-                        <td><input type="number" id="txtQuantity" /></td>
-                        <td><input type="number" id="txtPrice" /></td>
-                        <td><input type="text" id="totalPrice" disabled /></td>
+                        <td><input type="text" name="ProductName" id="txtProductName" /></td>
+                        <td><input type="text" name="ProductNo" id="txtProductNo" /></td>
+                        <td><input type="text" name="Quantity" id="txtQuantity" /></td>
+                        <td><input type="text" name="Price" id="txtPrice" /></td>
+                        <td><input type="text" name="Total" id="totalPrice" disabled /></td>
                         <td><input type="button" class="btn btn-primary" id="btnAdd" value="Add" /></td>
                     </tr>
                 </tfoot>
             </table>
         </div>
         <br />
-        @*<input type="button" id="btnSave" value="Save All" />*@
         <div class="form-group">
             <input type="button" id="btnSave" value="Create" class="btn btn-primary" />
         </div>
@@ -217,10 +217,7 @@
         e.preventDefault();
         var Details = [];
         var totalAmount = 0;
-        var netTotal = 0;
-        debugger;
         var sTableName = document.getElementById("tblInvoiceLine");
-        debugger;
         for (var i = 0; i < sTableName.children[1].childElementCount; i++) {
             var tableRow = sTableName.children[1].children[i];
             var InvoiceLine = {};
@@ -246,22 +243,24 @@
 
         console.log(JSON.stringify(InvoiceHeaders));
         console.log(InvoiceHeaders);
+         $('#invoiceForm').submit();
         //Send the JSON array to Controller using AJAX.
-        $.ajax({
-            type: "POST",
-            async: true,
-            url: "/Invoice/CreateInvoice/",
-            data: JSON.stringify(InvoiceHeaders),
-            contentType: "application/json; charset=utf-8",
-            dataType: "json",
-            success: function (response) {
-                alert(response + " record(s) inserted.");
-            },
-            failure: function (response) {
-                alert(response.responseText);
-            }
+        //$.ajax({
+        //    type: "POST",
+        //    async: true,
+        //    url: "/Invoice/CreateInvoice/",
+        //    body: InvoiceHeaders,
+        //    //data: JSON.stringify(InvoiceHeaders),
+        //    contentType: "application/json; charset=utf-8",
+        //    dataType: "json",
+        //    success: function (response) {
+        //        alert(response + " record(s) inserted.");
+        //    },
+        //    failure: function (response) {
+        //        alert(response.responseText);
+        //    }
 
-        });
+        //});
     });
 </script>
 
