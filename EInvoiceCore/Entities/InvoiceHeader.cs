@@ -13,6 +13,7 @@ namespace EInvoiceCore.Entities
         public int Id { get; set; }
         //[DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int InternalId { get; set; }
+        public string UserId { get; set; }
         public string CustomerName { get; set; }
         public DateTime InvoiceDate { get; set; }
         public decimal TaxValue { get; set; }

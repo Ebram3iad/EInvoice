@@ -2,7 +2,6 @@
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
-using System.Text;
 
 namespace EInvoiceInfrastructure.Services.InvoiceHeaderServices.InvoiceVModels
 {
@@ -10,6 +9,8 @@ namespace EInvoiceInfrastructure.Services.InvoiceHeaderServices.InvoiceVModels
     {
         [Required]
         public int InternalId { get; set; }
+        public string UserId { get; set; }
+
         [Required]
         public string CustomerName { get; set; }
         [Required]
